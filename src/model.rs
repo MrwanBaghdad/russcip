@@ -372,7 +372,7 @@ impl ScipPtr {
         ) -> ffi::SCIP_Retcode {
             let data_ptr = unsafe { ffi::SCIPbranchruleGetData(branchrule) };
             assert!(!data_ptr.is_null());
-            let rule_ptr = data_ptr as *mut &mut dyn BranchRule;
+            let rule_ptr = data_ptr as *mut Box<dyn BranchRule>;
             let cands = ScipPtr::get_lp_branching_cands(scip);
             let branching_res = unsafe { (*rule_ptr).execute(cands) };
 
@@ -440,7 +440,7 @@ impl ScipPtr {
         ) -> ffi::SCIP_Retcode {
             let data_ptr = unsafe { ffi::SCIPpricerGetData(pricer) };
             assert!(!data_ptr.is_null());
-            let pricer_ptr = data_ptr as *mut &mut dyn Pricer;
+            let pricer_ptr = data_ptr as *mut Box<dyn Pricer>;
 
             let n_vars_before = unsafe { ffi::SCIPgetNVars(scip) };
             let pricing_res = unsafe { (*pricer_ptr).generate_columns(farkas) };
